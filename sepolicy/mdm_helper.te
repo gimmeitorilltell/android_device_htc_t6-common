@@ -1,5 +1,4 @@
 allow mdm_helper cgroup:dir { create add_name };
-allow mdm_helper default_prop:property_service set;
 allow mdm_helper efs_data_file:lnk_file read;
 allow mdm_helper firmware_file:file read;
 allow mdm_helper init:unix_stream_socket { connectto read write };
