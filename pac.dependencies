@@ -1,7 +1,8 @@
 [
   {
-    "repository": "android_device_htc_msm8960-common",
-    "target_path": "device/htc/msm8960-common"
+    "repository": "gimmeitorilltell/android_device_htc_t6-common",
+    "target_path": "device/htc/msm8960-common",
+    "branch": "p6.0"
   },
   {
     "repository": "android_kernel_htc_msm8960",
