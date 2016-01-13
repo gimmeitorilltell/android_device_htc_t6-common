@@ -349,6 +349,16 @@ service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     disabled
     oneshot
 
+service cdma_kickstart /system/bin/qcks -1 modem_st1 -2 modem_st2 -3 radio_config -4 cdma_record -i /firmware/mdm/image/
+    class core
+    user root
+    disabled
+
+service gsm_kickstart /system/bin/qcks -1 modem_st1 -2 modem_st2 -3 radio_config -4 cdma_record -i /firmware/mdm/image/ -u
+    class core
+    user root
+    disabled
+
 service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
     class main
     user root
@@ -368,6 +378,20 @@ service qseecomd /system/bin/qseecomd
     class core
     user root
     group root
+
+service ril-daemon2 /system/bin/rild -c 2
+    class main
+    socket rild2 stream 660 root radio
+    socket rild-debug2 stream 660 radio system
+    user root
+    disabled
+    group radio cache inet misc audio sdcard_r sdcard_rw diag qcom_diag log
+
+service rild2-wrapper /system/bin/sh /system/etc/init.qcom.ril.sh
+    class late_start
+    user root
+    group root
+    oneshot
 
 service thermald /system/bin/thermald
     class main

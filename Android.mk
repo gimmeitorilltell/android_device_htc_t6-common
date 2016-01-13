@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-ifneq ($(filter t6 t6spr t6vzw,$(TARGET_DEVICE)),)
+ifneq ($(filter t6 t6dug t6spr t6tl t6vzw t6univ,$(TARGET_DEVICE)),)
 
 LOCAL_PATH := $(call my-dir)
 include $(call all-subdir-makefiles,$(LOCAL_PATH))
@@ -33,14 +33,14 @@ FIRMWARE_MDM_IMAGES := \
     sbl1.mbn \
     sbl2.mbn
 
-ifneq ($(filter t6,$(TARGET_DEVICE)),)
+ifneq ($(filter t6 t6dug t6tl t6univ,$(TARGET_DEVICE)),)
 FIRMWARE_MDM_IMAGES += \
     htc61.mbn htc62.mbn htc63.mbn htc64.mbn htc65.mbn \
     htcnvbak.mbn htcrcust.mbn htcsmem.mbn \
     sbl1_82.mbn sbl1_92.mbn sbl1_96.mbn
 endif
 
-ifneq ($(filter t6spr t6vzw,$(TARGET_DEVICE)),)
+ifneq ($(filter t6spr t6vzw t6univ,$(TARGET_DEVICE)),)
 FIRMWARE_MDM_IMAGES += \
     htccnv.mbn htcnvmfg.mbn htcuserd.mbn
 endif
