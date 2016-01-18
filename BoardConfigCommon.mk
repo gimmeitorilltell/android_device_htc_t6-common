@@ -29,7 +29,7 @@
 
 LOCAL_PATH := device/htc/t6-common
 
-TARGET_SPECIFIC_HEADER_PATH += $(LOCAL_PATH)/include
+TARGET_SPECIFIC_HEADER_PATH += device/htc/t6-common/include
 
 USE_CLANG_PLATFORM_BUILD := true
 
