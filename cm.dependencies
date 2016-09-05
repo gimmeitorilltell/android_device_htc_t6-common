@@ -1,10 +1,12 @@
 [
   {
-    "repository": "android_device_htc_msm8960-common",
-    "target_path": "device/htc/msm8960-common"
+        "repository": "gimmeitorilltell/device_htc_msm8960-common",
+        "target_path": "device/htc/msm8960-common",
+        "branch": "bs6"
   },
   {
-    "repository": "android_kernel_htc_msm8960",
-    "target_path": "kernel/htc/msm8960"
+        "repository": "CandyDevices/kernel_htc_msm8960",
+        "target_path": "kernel/htc/msm8960",
+        "branch": "c6"
   }
 ]
