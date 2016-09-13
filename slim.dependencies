@@ -1,0 +1,12 @@
+[
+  {
+    "repository":  "SlimRoms/device_htc_msm8960-common",
+    "target_path": "device/htc/msm8960-common",
+    "branch":      "ng7.0"
+  },
+  {
+    "repository":  "SlimRoms/kernel_htc_msm8960",
+    "target_path": "kernel/htc/msm8960",
+    "branch":      "ng7.0"
+  }
+]
