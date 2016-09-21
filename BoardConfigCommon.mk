@@ -86,8 +86,7 @@ TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
 # RIL
-BOARD_PROVIDES_LIBRIL := true
-BOARD_RIL_CLASS := ../../../$(LOCAL_PATH)/ril
+TARGET_RIL_VARIANT := caf
 
 # SELinux
 #-include device/qcom/sepolicy/sepolicy.mk
