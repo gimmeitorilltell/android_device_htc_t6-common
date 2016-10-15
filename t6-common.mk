@@ -56,9 +56,7 @@ PRODUCT_COPY_FILES += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    camera.msm8960 \
-    Snap \
-    libcamera_shim
+    camera.msm8960
 
 # Gello
 PRODUCT_PACKAGES += \
@@ -87,10 +85,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     keystore.msm8960
 
-# Log
-PRODUCT_PACKAGES += \
-    liblog_shim
-
 # Media
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml
@@ -117,10 +111,6 @@ PRODUCT_COPY_FILES += \
 # Qualcomm scripts
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/init.qcom.bt.sh:/system/etc/init.qcom.bt.sh
-
-# PowerHAL
-PRODUCT_PACKAGES += \
-    libqc-opt_shim
 
 # Ramdisk
 PRODUCT_PACKAGES += \
