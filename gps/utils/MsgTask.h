@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, 2015 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2011-2013,2015 The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -26,46 +26,42 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+#ifndef __MSG_TASK__
+#define __MSG_TASK__
 
-#ifndef LOC_LOG_H
-#define LOC_LOG_H
+#include <LocThread.h>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+struct LocMsg {
+    inline LocMsg() {}
+    inline virtual ~LocMsg() {}
+    virtual void proc() const = 0;
+    inline virtual void log() const {}
+};
 
-#include <ctype.h>
-#include <stdlib.h>
-#include "loc_target.h"
+class MsgTask : public LocRunnable {
+    const void* mQ;
+    LocThread* mThread;
+    friend class LocThreadDelegate;
+protected:
+    virtual ~MsgTask();
+public:
+    MsgTask(LocThread::tCreate tCreator, const char* threadName = NULL, bool joinable = true);
+    MsgTask(const char* threadName = NULL, bool joinable = true);
+    // this obj will be deleted once thread is deleted
+    void destroy();
+    void sendMsg(const LocMsg* msg) const;
+    // Overrides of LocRunnable methods
+    // This method will be repeated called until it returns false; or
+    // until thread is stopped.
+    virtual bool run();
 
-typedef struct
-{
-   const char *name;
-   long        val;
-} loc_name_val_s_type;
+    // The method to be run before thread loop (conditionally repeatedly)
+    // calls run()
+    virtual void prerun();
 
-#define NAME_VAL(x) {"" #x "", x }
+    // The method to be run after thread loop (conditionally repeatedly)
+    // calls run()
+    inline virtual void postrun() {}
+};
 
-#define UNKNOWN_STR "UNKNOWN"
-
-#define CHECK_MASK(type, value, mask_var, mask) \
-   (((mask_var) & (mask)) ? (type) (value) : (type) (-1))
-
-#define LOC_TABLE_SIZE(table) (sizeof(table)/sizeof((table)[0]))
-
-/* Get names from value */
-const char* loc_get_name_from_mask(const loc_name_val_s_type table[], size_t table_size, long mask);
-const char* loc_get_name_from_val(const loc_name_val_s_type table[], size_t table_size, long value);
-const char* loc_get_msg_q_status(int status);
-const char* loc_get_target_name(unsigned int target);
-
-extern const char* log_succ_fail_string(int is_succ);
-
-extern char *loc_get_time(char *time_string, size_t buf_size);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* LOC_LOG_H */
+#endif //__MSG_TASK__

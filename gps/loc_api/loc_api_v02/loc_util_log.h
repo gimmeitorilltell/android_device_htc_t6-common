@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, 2015 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -24,48 +24,62 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
+#ifndef LOC_UTIL_LOG_H
+#define LOC_UTIL_LOG_H
 
-#ifndef LOC_LOG_H
-#define LOC_LOG_H
+#if defined(_ANDROID_)
+#include "loc_api_v02_log.h"
+#include <log_util.h>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+#else // no _ANDROID_
 
-#include <ctype.h>
-#include <stdlib.h>
-#include "loc_target.h"
+#if defined(__LOC_API_V02_LOG_SILENT__)
+#define MSG_LOG
+#define LOC_LOGE(...) MSG_LOG(__VA_ARGS__);
+#define LOC_LOGW(...) MSG_LOG(__VA_ARGS__);
+#define LOC_LOGD(...) MSG_LOG(__VA_ARGS__);
+#define LOC_LOGI(...) MSG_LOG(__VA_ARGS__);
+#define LOC_LOGV(...) MSG_LOG(__VA_ARGS__);
+#else
 
-typedef struct
-{
-   const char *name;
-   long        val;
-} loc_name_val_s_type;
+// common for QNX and Griffon
 
-#define NAME_VAL(x) {"" #x "", x }
+//error logs
+#define LOC_LOGE(...) printf(__VA_ARGS__)
+//warning logs
+#define LOC_LOGW(...) printf(__VA_ARGS__)
+// debug logs
+#define LOC_LOGD(...) printf(__VA_ARGS__)
+//info logs
+#define LOC_LOGI(...) printf(__VA_ARGS__)
+//verbose logs
+#define LOC_LOGV(...) printf(__VA_ARGS__)
+#endif //__LOC_API_V02_LOG_SILENT__
 
-#define UNKNOWN_STR "UNKNOWN"
+#define MODEM_LOG_CALLFLOW(SPEC, VAL)
+#define EXIT_LOG_CALLFLOW(SPEC, VAL)
 
-#define CHECK_MASK(type, value, mask_var, mask) \
-   (((mask_var) & (mask)) ? (type) (value) : (type) (-1))
+#define loc_get_v02_event_name(X) #X
+#define loc_get_v02_client_status_name(X) #X
 
-#define LOC_TABLE_SIZE(table) (sizeof(table)/sizeof((table)[0]))
+#define loc_get_v02_qmi_status_name(X)  #X
 
-/* Get names from value */
-const char* loc_get_name_from_mask(const loc_name_val_s_type table[], size_t table_size, long mask);
-const char* loc_get_name_from_val(const loc_name_val_s_type table[], size_t table_size, long value);
-const char* loc_get_msg_q_status(int status);
-const char* loc_get_target_name(unsigned int target);
+//specific to OFF TARGET
+#ifdef LOC_UTIL_TARGET_OFF_TARGET
 
-extern const char* log_succ_fail_string(int is_succ);
+#include <stdio.h>
+# include <asm/errno.h>
+# include <sys/time.h>
 
-extern char *loc_get_time(char *time_string, size_t buf_size);
+// get around strl*: not found in glibc
+// TBD:look for presence of eglibc other libraries
+// with strlcpy supported.
+#define strlcpy(X,Y,Z) strcpy(X,Y)
+#define strlcat(X,Y,Z) strcat(X,Y)
 
-#ifdef __cplusplus
-}
-#endif
+#endif //LOC_UTIL_TARGET_OFF_TARGET
 
-#endif /* LOC_LOG_H */
+#endif //_ANDROID_
+
+#endif //LOC_UTIL_LOG_H

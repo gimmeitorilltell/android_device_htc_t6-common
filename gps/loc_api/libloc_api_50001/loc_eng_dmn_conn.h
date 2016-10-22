@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, 2015 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2011-2012,2014 The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -26,46 +26,34 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+#ifndef LOC_ENG_DATA_SERVER_H
+#define LOC_ENG_DATA_SERVER_H
 
-#ifndef LOC_LOG_H
-#define LOC_LOG_H
+#include "loc_eng_dmn_conn_thread_helper.h"
 
-#ifdef __cplusplus
-extern "C"
-{
+#ifdef _ANDROID_
+
+#define GPSONE_LOC_API_Q_PATH "/data/misc/location/gpsone_d/gpsone_loc_api_q"
+#define GPSONE_LOC_API_RESP_Q_PATH "/data/misc/location/gpsone_d/gpsone_loc_api_resp_q"
+#define QUIPC_CTRL_Q_PATH "/data/misc/location/gpsone_d/quipc_ctrl_q"
+#define MSAPM_CTRL_Q_PATH "/data/misc/location/gpsone_d/msapm_ctrl_q"
+#define MSAPU_CTRL_Q_PATH "/data/misc/location/gpsone_d/msapu_ctrl_q"
+
+#else
+
+#define GPSONE_LOC_API_Q_PATH "/tmp/gpsone_loc_api_q"
+#define GPSONE_LOC_API_RESP_Q_PATH "/tmp/gpsone_loc_api_resp_q"
+#define QUIPC_CTRL_Q_PATH "/tmp/quipc_ctrl_q"
+#define MSAPM_CTRL_Q_PATH "/tmp/msapm_ctrl_q"
+#define MSAPU_CTRL_Q_PATH "/tmp/msapu_ctrl_q"
+
 #endif
 
-#include <ctype.h>
-#include <stdlib.h>
-#include "loc_target.h"
+int loc_eng_dmn_conn_loc_api_server_launch(thelper_create_thread   create_thread_cb,
+    const char * loc_api_q_path, const char * ctrl_q_path, void *agps_handle);
+int loc_eng_dmn_conn_loc_api_server_unblock(void);
+int loc_eng_dmn_conn_loc_api_server_join(void);
+int loc_eng_dmn_conn_loc_api_server_data_conn(int, int);
 
-typedef struct
-{
-   const char *name;
-   long        val;
-} loc_name_val_s_type;
+#endif /* LOC_ENG_DATA_SERVER_H */
 
-#define NAME_VAL(x) {"" #x "", x }
-
-#define UNKNOWN_STR "UNKNOWN"
-
-#define CHECK_MASK(type, value, mask_var, mask) \
-   (((mask_var) & (mask)) ? (type) (value) : (type) (-1))
-
-#define LOC_TABLE_SIZE(table) (sizeof(table)/sizeof((table)[0]))
-
-/* Get names from value */
-const char* loc_get_name_from_mask(const loc_name_val_s_type table[], size_t table_size, long mask);
-const char* loc_get_name_from_val(const loc_name_val_s_type table[], size_t table_size, long value);
-const char* loc_get_msg_q_status(int status);
-const char* loc_get_target_name(unsigned int target);
-
-extern const char* log_succ_fail_string(int is_succ);
-
-extern char *loc_get_time(char *time_string, size_t buf_size);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* LOC_LOG_H */

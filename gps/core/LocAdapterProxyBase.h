@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, 2015 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2014 The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,45 +27,44 @@
  *
  */
 
-#ifndef LOC_LOG_H
-#define LOC_LOG_H
+#ifndef LOC_ADAPTER_PROXY_BASE_H
+#define LOC_ADAPTER_PROXY_BASE_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+#include <ContextBase.h>
+#include <gps_extended.h>
 
-#include <ctype.h>
-#include <stdlib.h>
-#include "loc_target.h"
+namespace loc_core {
 
-typedef struct
-{
-   const char *name;
-   long        val;
-} loc_name_val_s_type;
+class LocAdapterProxyBase {
+private:
+    LocAdapterBase *mLocAdapterBase;
+protected:
+    inline LocAdapterProxyBase(const LOC_API_ADAPTER_EVENT_MASK_T mask,
+                   ContextBase* context):
+                   mLocAdapterBase(new LocAdapterBase(mask, context, this)) {
+    }
+    inline virtual ~LocAdapterProxyBase() {
+        delete mLocAdapterBase;
+    }
+    ContextBase* getContext() const {
+        return mLocAdapterBase->getContext();
+    }
+    inline void updateEvtMask(LOC_API_ADAPTER_EVENT_MASK_T event,
+                              loc_registration_mask_status isEnabled) {
+        mLocAdapterBase->updateEvtMask(event,isEnabled);
+    }
 
-#define NAME_VAL(x) {"" #x "", x }
+public:
+    inline virtual void handleEngineUpEvent() {};
+    inline virtual void handleEngineDownEvent() {};
+    inline virtual bool reportPosition(UlpLocation &location,
+                                       GpsLocationExtended &locationExtended,
+                                       enum loc_sess_status status,
+                                       LocPosTechMask loc_technology_mask) {
+        return false;
+    }
+};
 
-#define UNKNOWN_STR "UNKNOWN"
+} // namespace loc_core
 
-#define CHECK_MASK(type, value, mask_var, mask) \
-   (((mask_var) & (mask)) ? (type) (value) : (type) (-1))
-
-#define LOC_TABLE_SIZE(table) (sizeof(table)/sizeof((table)[0]))
-
-/* Get names from value */
-const char* loc_get_name_from_mask(const loc_name_val_s_type table[], size_t table_size, long mask);
-const char* loc_get_name_from_val(const loc_name_val_s_type table[], size_t table_size, long value);
-const char* loc_get_msg_q_status(int status);
-const char* loc_get_target_name(unsigned int target);
-
-extern const char* log_succ_fail_string(int is_succ);
-
-extern char *loc_get_time(char *time_string, size_t buf_size);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* LOC_LOG_H */
+#endif //LOC_ADAPTER_PROXY_BASE_H
