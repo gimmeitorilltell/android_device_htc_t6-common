@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, 2015 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -26,46 +26,40 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+#ifndef IZAT_PROXY_BASE_H
+#define IZAT_PROXY_BASE_H
+#include <gps_extended.h>
+#include <MsgTask.h>
 
-#ifndef LOC_LOG_H
-#define LOC_LOG_H
+namespace loc_core {
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+class LocApiBase;
+class LocAdapterBase;
+class ContextBase;
 
-#include <ctype.h>
-#include <stdlib.h>
-#include "loc_target.h"
+class LBSProxyBase {
+    friend class ContextBase;
+    inline virtual LocApiBase*
+        getLocApi(const MsgTask* msgTask,
+                  LOC_API_ADAPTER_EVENT_MASK_T exMask,
+                  ContextBase* context) const {
+        return NULL;
+    }
+protected:
+    inline LBSProxyBase() {}
+public:
+    inline virtual ~LBSProxyBase() {}
+    inline virtual void requestUlp(LocAdapterBase* adapter,
+                                   unsigned long capabilities) const {}
+    inline virtual bool hasAgpsExtendedCapabilities() const { return false; }
+    inline virtual bool hasCPIExtendedCapabilities() const { return false; }
+    inline virtual void modemPowerVote(bool power) const {}
+    virtual void injectFeatureConfig(ContextBase* context) const {}
+    inline virtual IzatDevId_t getIzatDevId() const { return 0; }
+};
 
-typedef struct
-{
-   const char *name;
-   long        val;
-} loc_name_val_s_type;
+typedef LBSProxyBase* (getLBSProxy_t)();
 
-#define NAME_VAL(x) {"" #x "", x }
+} // namespace loc_core
 
-#define UNKNOWN_STR "UNKNOWN"
-
-#define CHECK_MASK(type, value, mask_var, mask) \
-   (((mask_var) & (mask)) ? (type) (value) : (type) (-1))
-
-#define LOC_TABLE_SIZE(table) (sizeof(table)/sizeof((table)[0]))
-
-/* Get names from value */
-const char* loc_get_name_from_mask(const loc_name_val_s_type table[], size_t table_size, long mask);
-const char* loc_get_name_from_val(const loc_name_val_s_type table[], size_t table_size, long value);
-const char* loc_get_msg_q_status(int status);
-const char* loc_get_target_name(unsigned int target);
-
-extern const char* log_succ_fail_string(int is_succ);
-
-extern char *loc_get_time(char *time_string, size_t buf_size);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* LOC_LOG_H */
+#endif // IZAT_PROXY_BASE_H
