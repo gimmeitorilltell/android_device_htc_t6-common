@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, 2015 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2013,2015 The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,45 +27,47 @@
  *
  */
 
-#ifndef LOC_LOG_H
-#define LOC_LOG_H
+#ifndef __LOC_DELAY_H__
+#define __LOC_DELAY_H__
 
 #ifdef __cplusplus
-extern "C"
-{
-#endif
+extern "C" {
+#endif /* __cplusplus */
+#include <stddef.h>
 
-#include <ctype.h>
-#include <stdlib.h>
-#include "loc_target.h"
+/*
+    user_data: client context pointer, passthrough. Originally received
+               from calling client when loc_timer_start() is called.
+    result:    0 if timer successfully timed out; else timer failed.
+*/
+typedef void (*loc_timer_callback)(void *user_data, int32_t result);
 
-typedef struct
-{
-   const char *name;
-   long        val;
-} loc_name_val_s_type;
 
-#define NAME_VAL(x) {"" #x "", x }
+/*
+    delay_msec:         timeout value for the timer.
+    cb_func:            callback function pointer, implemented by client.
+                        Can not be NULL.
+    user_data:          client context pointer, passthrough.  Will be
+                        returned when loc_timer_callback() is called.
+    wakeOnExpire:       true if to wake up CPU (if sleeping) upon timer
+                                expiration and notify the client.
+                        false if to wait until next time CPU wakes up (if
+                                 sleeping) and then notify the client.
+    Returns the handle, which can be used to stop the timer
+                        NULL, if timer start fails (e.g. if cb_func is NULL).
+*/
+void* loc_timer_start(uint64_t delay_msec,
+                      loc_timer_callback cb_func,
+                      void *user_data,
+                      bool wake_on_expire=false);
 
-#define UNKNOWN_STR "UNKNOWN"
-
-#define CHECK_MASK(type, value, mask_var, mask) \
-   (((mask_var) & (mask)) ? (type) (value) : (type) (-1))
-
-#define LOC_TABLE_SIZE(table) (sizeof(table)/sizeof((table)[0]))
-
-/* Get names from value */
-const char* loc_get_name_from_mask(const loc_name_val_s_type table[], size_t table_size, long mask);
-const char* loc_get_name_from_val(const loc_name_val_s_type table[], size_t table_size, long value);
-const char* loc_get_msg_q_status(int status);
-const char* loc_get_target_name(unsigned int target);
-
-extern const char* log_succ_fail_string(int is_succ);
-
-extern char *loc_get_time(char *time_string, size_t buf_size);
+/*
+    handle becomes invalid upon the return of the callback
+*/
+void loc_timer_stop(void*& handle);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
-#endif /* LOC_LOG_H */
+#endif //__LOC_DELAY_H__

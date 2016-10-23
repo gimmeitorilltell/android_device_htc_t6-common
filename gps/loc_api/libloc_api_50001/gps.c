@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, 2015 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2011,2015 The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -9,7 +9,7 @@
  *       copyright notice, this list of conditions and the following
  *       disclaimer in the documentation and/or other materials provided
  *       with the distribution.
- *     * Neither the name of The Linux Foundation, nor the names of its
+ *     * Neither the name of The Linux Foundation nor the names of its
  *       contributors may be used to endorse or promote products derived
  *       from this software without specific prior written permission.
  *
@@ -27,45 +27,47 @@
  *
  */
 
-#ifndef LOC_LOG_H
-#define LOC_LOG_H
+#include <hardware/gps.h>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-#include <ctype.h>
 #include <stdlib.h>
-#include "loc_target.h"
+#include <string.h>
 
-typedef struct
+extern const GpsInterface* get_gps_interface();
+
+const GpsInterface* gps__get_gps_interface(struct gps_device_t* dev)
 {
-   const char *name;
-   long        val;
-} loc_name_val_s_type;
-
-#define NAME_VAL(x) {"" #x "", x }
-
-#define UNKNOWN_STR "UNKNOWN"
-
-#define CHECK_MASK(type, value, mask_var, mask) \
-   (((mask_var) & (mask)) ? (type) (value) : (type) (-1))
-
-#define LOC_TABLE_SIZE(table) (sizeof(table)/sizeof((table)[0]))
-
-/* Get names from value */
-const char* loc_get_name_from_mask(const loc_name_val_s_type table[], size_t table_size, long mask);
-const char* loc_get_name_from_val(const loc_name_val_s_type table[], size_t table_size, long value);
-const char* loc_get_msg_q_status(int status);
-const char* loc_get_target_name(unsigned int target);
-
-extern const char* log_succ_fail_string(int is_succ);
-
-extern char *loc_get_time(char *time_string, size_t buf_size);
-
-#ifdef __cplusplus
+    return get_gps_interface();
 }
-#endif
 
-#endif /* LOC_LOG_H */
+static int open_gps(const struct hw_module_t* module, char const* name,
+        struct hw_device_t** device)
+{
+    struct gps_device_t *dev = (struct gps_device_t *) malloc(sizeof(struct gps_device_t));
+
+    if(dev == NULL)
+        return -1;
+
+    memset(dev, 0, sizeof(*dev));
+
+    dev->common.tag = HARDWARE_DEVICE_TAG;
+    dev->common.version = 0;
+    dev->common.module = (struct hw_module_t*)module;
+    dev->get_gps_interface = gps__get_gps_interface;
+
+    *device = (struct hw_device_t*)dev;
+    return 0;
+}
+
+static struct hw_module_methods_t gps_module_methods = {
+    .open = open_gps
+};
+
+struct hw_module_t HAL_MODULE_INFO_SYM = {
+    .tag = HARDWARE_MODULE_TAG,
+    .module_api_version = 1,
+    .hal_api_version = 0,
+    .id = GPS_HARDWARE_MODULE_ID,
+    .name = "loc_api GPS Module",
+    .author = "Qualcomm USA, Inc.",
+    .methods = &gps_module_methods,
+};
