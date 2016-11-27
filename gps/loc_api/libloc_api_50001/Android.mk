@@ -60,7 +60,7 @@ include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := gps.msm8974
+LOCAL_MODULE := gps.msm8960
 LOCAL_MODULE_OWNER := qcom
 
 LOCAL_MODULE_TAGS := optional
