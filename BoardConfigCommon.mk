@@ -100,6 +100,9 @@ DEFAULT_ROOT_METHOD := magisk
 
 BOARD_SEPOLICY_DIRS += device/htc/t6-common/sepolicy
 
+# Releasetools
+TARGET_RELEASETOOLS_EXTENSIONS := device/htc/t6-common/releasetools
+
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
 BOARD_WLAN_DEVICE := qcwcn
