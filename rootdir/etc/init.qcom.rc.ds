@@ -3,13 +3,29 @@ import init.target.rc
 import init.qcom.usb.rc
 
 on early-init
+    symlink /data/tombstones /tombstones
+
+	# For firmwares
+    mkdir /firmware 0771 system system
+    mkdir /vendor 0771 system system
+    mkdir /vendor/firmware 0771 system system
+    mkdir /firmware/mdm 0771 system system
+    mkdir /firmware/q6 0771 system system
+    mkdir /firmware/wcnss 0771 system system
+
     mount debugfs /sys/kernel/debug /sys/kernel/debug
     chown system system /sys/kernel/debug/kgsl/proc
 
 on init
-    export LD_SHIM_LIBS "/system/lib/hw/camera.vendor.msm8960.so|libcamera_shim.so:/system/vendor/lib/libqc-opt.so|libqc-opt_shim.so:/system/lib/liblog.so|liblog_shim.so"
+	export LD_PRELOAD libshim_atomic.so
+
+    export LD_SHIM_LIBS "/system/vendor/lib/hw/camera.vendor.msm8960.so|libcamera_shim.so:/system/vendor/lib/libqc-opt.so|libqc-opt_shim.so:/system/lib/liblog.so|liblog_shim.so:/system/lib/libril_qsc.so|libril_qscshim.so:/system/lib/libvcsfp.so|libvcsfp_shim.so:/system/vendor/lib/libril.so|libshim_ril.so:/system/vendor/lib/libril-qc-qmi-1.so|libshim_ril.so"
 
     symlink /sdcard /storage/sdcard0
+
+    # Setup ZRAM options
+    write /sys/block/zram0/comp_algorithm lz4
+    write /sys/block/zram0/max_comp_streams 2
 
     # For Invensense MPU3050
     chmod 0664 /sys/class/gyro_sensors/gyro/mpu_lpm_flag
@@ -161,14 +177,6 @@ on fs
     mkdir /devlog 0700 root root
     mkdir /ramdump 0700 root root
 
-    # For firmwares
-    mkdir /firmware 0771 system system
-    mkdir /vendor 0771 system system
-    mkdir /vendor/firmware 0771 system system
-    mkdir /firmware/mdm 0771 system system
-    mkdir /firmware/q6 0771 system system
-    mkdir /firmware/wcnss 0771 system system
-
     mount_all ./fstab.qcom
 
     mkdir /mnt/qcks 0700 root system
@@ -191,7 +199,6 @@ on post-fs-data
 
     # Tombstones
     mkdir /data/tombstones 0771 system system
-    symlink /data/tombstones /tombstones
     mkdir /tombstones/mdm 0771 system system
     mkdir /tombstones/modem 0771 system system
     mkdir /tombstones/lpass 0771 system system
@@ -236,7 +243,7 @@ on boot
     mkdir /dev/socket/qmux_gps 0770 gps gps
     chmod 2770 /dev/socket/qmux_gps
 
-    start qcamerasvr
+    #start qcamerasvr
 
     # 4.3 requires this
     chmod 0644 /proc/cmdline
@@ -315,17 +322,38 @@ on boot
     chown system system /sys/class/power_supply/battery/navigation
     chmod 0220 /sys/class/power_supply/battery/navigation
 
+    # Fingerprint
+    mkdir /dev/validity 0770 system system
+    mkdir /data/validity 0770 system system
+
+    # Fingerprint_sensor
+    chown system system /sys/android_fingerprint/fpmount
+    chown system system /sys/android_fingerprint/fpr
+
+    chown system system /dev/htc_fingerprint
+    chmod 0660 /dev/htc_fingerprint
+    restorecon_recursive /dev/htc_fingerprint
+    restorecon_recursive /dev/validity
+    restorecon_recursive /dev/vfsspi
+
+    # Swappiness and memory pages
+    write /proc/sys/vm/page-cluster 0
+    write /proc/sys/vm/swappiness 40
+
+    # Wifi firmware reload path
+    chown wifi wifi /sys/module/wlan/parameters/fwpath
+
     # Wake on volume
     write /sys/keyboard/vol_wakeup 1
 
 # Services begin here
 
-service akmd /system/bin/akmd
+service akmd /vendor/bin/akmd
     class main
     user system
     group system misc input
 
-service cir_fw_update /system/bin/cir_fw_update -u cir.img
+service cir_fw_update /vendor/bin/cir_fw_update -u cir.img
     class main
     user root
     group root
@@ -338,41 +366,47 @@ service fm_dl /system/bin/setprop hw.fm.init 1
     disabled
     oneshot
 
-service netmgrd /system/bin/netmgrd
+service netmgrd /vendor/bin/netmgrd
     class core
+    group radio system wakelock
 
-service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
+service hciattach /system/bin/sh /system/vendor/etc/init.qcom.bt.sh
     user bluetooth
     group qcom_oncrpc bluetooth net_bt_admin system
     disabled
-    seclabel u:r:bluetooth_loader:s0
+    # seclabel u:r:bluetooth_loader:s0
     oneshot
 
-service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
+service mpdecision /vendor/bin/mpdecision --no_sleep --avg_comp
     class main
     user root
     group root readproc
     disabled
 
-service qcamerasvr /system/bin/mm-qcamera-daemon
+service qcamerasvr /vendor/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet graphics
 
-service qmuxd /system/bin/qmuxd
+service qmuxd /vendor/bin/qmuxd
     class core
     user radio
-    group radio audio gps
+    group radio audio gps wakelock
 
-service qseecomd /system/bin/qseecomd
+service qseecomd /vendor/bin/qseecomd
     class core
     user root
     group root
 
-service thermald /system/bin/thermald
+service thermald /vendor/bin/thermald
     class main
     user root
     group root
+	
+service vcsFPService /vendor/bin/vcsFPService
+    class late_start
+    user root
+    group system
 
 # WiFi
 service p2p_supplicant /system/bin/wpa_supplicant \
@@ -410,6 +444,11 @@ service wcnss-service /system/bin/wcnss_service
     user system
     group system wifi qcom_diag radio
     oneshot
+
+## Properties start here
+on property:sys.boot_completed=1
+    # Enable ZRAM on boot_complete
+    swapon_all ./fstab.qcom
 
 # Property triggers begin here
 on property:bluetooth.hciattach=true
