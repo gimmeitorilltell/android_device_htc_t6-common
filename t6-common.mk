@@ -132,6 +132,7 @@ PRODUCT_PACKAGES += \
     init.qcom.power.rc \
     init.qcom.usb.rc \
     init.target.rc \
+    init.target.sh \
     ueventd.qcom.rc
 
 # Thermal
