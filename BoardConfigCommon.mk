@@ -109,6 +109,9 @@ TARGET_LD_SHIM_LIBS := \
     /system/vendor/lib/libril.so|libshim_ril.so \
     /system/vendor/lib/libril-qc-qmi-1.so|libshim_ril.so
 
+# Releasetools
+TARGET_RELEASETOOLS_EXTENSIONS := device/htc/t6-common/releasetools
+
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
 BOARD_WLAN_DEVICE := qcwcn
