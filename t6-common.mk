@@ -125,7 +125,11 @@ endif
 PRODUCT_COPY_FILES += \
     $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml
 
-# Qualcomm scripts
+# Perf
+PRODUCT_PACKAGES += \
+    libshims_atomic
+
+# Permissions
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/init.qcom.bt.sh:/system/etc/init.qcom.bt.sh
 
