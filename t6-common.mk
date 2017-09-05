@@ -209,7 +209,8 @@ PRODUCT_PACKAGES += \
 # WiFi
 PRODUCT_PACKAGES += \
     libwcnss_qmi \
-    wcnss_service
+    wcnss_service \
+    wificond
 
 # WiFi HIDL interfaces
 PRODUCT_PACKAGES += \
