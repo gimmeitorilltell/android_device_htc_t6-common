@@ -22,6 +22,7 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_C_INCLUDES := \
+    $(LOCAL_PATH)/../include \
     system/media/camera/include
 
 LOCAL_SRC_FILES := \
