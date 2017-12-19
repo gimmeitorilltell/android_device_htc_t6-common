@@ -1,11 +1,17 @@
 # Executables
-bin/akmd
-bin/hci_qcomm_init
-bin/ks
-bin/mm-qcamera-daemon
-bin/mpdecision
-bin/radish
-bin/thermald
+bin/akmd:vendor/bin/akmd
+bin/hci_qcomm_init:vendor/bin/hci_qcomm_init
+bin/ks:vendor/bin/ks
+bin/mm-qcamera-daemon:vendor/bin/mm-qcamera-daemon
+bin/mpdecision:vendor/bin/mpdecision
+bin/radish:vendor/bin/radish
+bin/thermald:vendor/bin/thermald
+
+# Finger Print
+bin/vcsFPService:vendor/bin/vcsFPService
+bin/vcsFirmwareVersion:vendor/bin/vcsFirmwareVersion
+bin/vcsSimpleCapture:vendor/bin/vcsSimpleCapture
+bin/vcsSimpleEnrollMatch:vendor/bin/vcsSimpleEnrollMatch
 
 # Configuration files
 etc/tfa/deftcoefA_l.speaker
@@ -75,7 +81,7 @@ lib/libaudcal.so
 lib/libcsd-client.so
 
 # Camera
-lib/hw/camera.vendor.msm8960.so
+lib/hw/camera.vendor.msm8960.so:vendor/lib/hw/camera.vendor.msm8960.so
 lib/libBeautyChat.so
 lib/libcameraasd.so
 lib/libcameraface.so
@@ -169,19 +175,19 @@ vendor/lib/libRSDriver_adreno.so
 vendor/lib/libsc-a3xx.so
 
 # Graphics firmware
-etc/firmware/a300_pfp.fw
-etc/firmware/a300_pm4.fw
-etc/firmware/vidc.b00
-etc/firmware/vidc.b01
-etc/firmware/vidc.b02
-etc/firmware/vidc.b03
-etc/firmware/vidc.mdt
-etc/firmware/vidc_1080p.fw
+etc/firmware/a300_pfp.fw:vendor/firmware/a300_pfp.fw
+etc/firmware/a300_pm4.fw:vendor/firmware/a300_pm4.fw
+etc/firmware/vidc.b00:vendor/firmware/vidc.b00
+etc/firmware/vidc.b01:vendor/firmware/vidc.b01
+etc/firmware/vidc.b02:vendor/firmware/vidc.b02
+etc/firmware/vidc.b03:vendor/firmware/vidc.b03
+etc/firmware/vidc.mdt:vendor/firmware/vidc.mdt
+etc/firmware/vidc_1080p.fw:vendor/firmware/vidc_1080p.fw
 
 # Irda
 bin/cir_fw_update
 etc/cir.img
-lib/hw/consumerir.default.so
+lib/hw/consumerir.default.so:vendor/lib/hw/consumerir.default.so
 
 # Keystore
 vendor/firmware/keymaster/keymaster.b00
@@ -195,11 +201,11 @@ lib/libI420colorconvert.so
 lib/libmm-color-convertor.so
 
 # Modem firmware
-etc/firmware/hcheck.b00
-etc/firmware/hcheck.b01
-etc/firmware/hcheck.b02
-etc/firmware/hcheck.b03
-etc/firmware/hcheck.mdt
+etc/firmware/hcheck.b00:vendor/firmware/hcheck.b00
+etc/firmware/hcheck.b01:vendor/firmware/hcheck.b01
+etc/firmware/hcheck.b02:vendor/firmware/hcheck.b02
+etc/firmware/hcheck.b03:vendor/firmware/hcheck.b03
+etc/firmware/hcheck.mdt:vendor/firmware/hcheck.mdt
 etc/firmware/lscbuffer_rev2.bin
 
 # Touchscreen firmware
@@ -209,7 +215,7 @@ etc/firmware/max11876.bin
 vendor/lib/libqc-opt.so
 
 # Sensors
-lib/hw/sensors.default.so
+lib/hw/sensors.default.so:vendor/lib/hw/sensors.default.so
 lib/libimu.so
 lib/libmllite.so
 lib/libmlplatform.so
@@ -217,7 +223,7 @@ lib/libmpl.so
 lib/libmpl_jni.so
 
 # Widevine
-bin/qseecomd
+bin/qseecomd:vendor/bin/qseecomd
 lib/libdrmdecrypt.so
 vendor/lib/drm/libdrmwvmplugin.so
 vendor/lib/libdrmfs.so
@@ -229,8 +235,8 @@ vendor/lib/libWVStreamControlAPI_L1.so
 vendor/lib/mediadrm/libwvdrmengine.so
 
 # Widevine firmware
-etc/firmware/tzapps.b00
-etc/firmware/tzapps.b01
-etc/firmware/tzapps.b02
-etc/firmware/tzapps.b03
-etc/firmware/tzapps.mdt
+etc/firmware/tzapps.b00:vendor/firmware/tzapps.b00
+etc/firmware/tzapps.b01:vendor/firmware/tzapps.b01
+etc/firmware/tzapps.b02:vendor/firmware/tzapps.b02
+etc/firmware/tzapps.b03:vendor/firmware/tzapps.b03
+etc/firmware/tzapps.mdt:vendor/firmware/tzapps.mdt
