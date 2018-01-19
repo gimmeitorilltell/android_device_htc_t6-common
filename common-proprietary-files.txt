@@ -1,6 +1,6 @@
 # Executables
 bin/akmd:vendor/bin/akmd
-bin/hci_qcomm_init:vendor/bin/hci_qcom
+bin/hci_qcomm_init:vendor/bin/hci_qcomm_init
 bin/ks:vendor/bin/ks
 bin/mm-qcamera-daemon:vendor/bin/mm-qcamera-daemon
 bin/mpdecision:vendor/bin/mpdecision
