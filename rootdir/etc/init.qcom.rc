@@ -323,62 +323,62 @@ on boot
 
 # Services begin here
 
-service akmd /system/bin/akmd
+service akmd /vendor/bin/akmd
     class main
     user system
     group system misc input
 
-service cir_fw_update /system/bin/cir_fw_update -u cir.img
+service cir_fw_update /vendor/bin/cir_fw_update -u cir.img
     class main
     user root
     group root
     oneshot
 
-service fm_dl /system/bin/setprop hw.fm.init 1
+service fm_dl /vendor/bin/setprop hw.fm.init 1
     class late_start
     user root
     group system fm_radio
     disabled
     oneshot
 
-service netmgrd /system/bin/netmgrd
+service netmgrd /vendor/bin/netmgrd
     class core
 
-service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
+service hciattach /vendor/bin/sh /vendor/etc/init.qcom.bt.sh
     user bluetooth
     group qcom_oncrpc bluetooth net_bt_admin system
     disabled
     seclabel u:r:bluetooth_loader:s0
     oneshot
 
-service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
+service mpdecision /vendor/bin/mpdecision --no_sleep --avg_comp
     class main
     user root
     group root readproc
     disabled
 
-service qcamerasvr /system/bin/mm-qcamera-daemon
+service qcamerasvr /vendor/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet graphics
 
-service qmuxd /system/bin/qmuxd
+service qmuxd /vendor/bin/qmuxd
     class core
     user radio
     group radio audio gps
 
-service qseecomd /system/bin/qseecomd
+service qseecomd /vendor/bin/qseecomd
     class core
     user root
     group root
 
-service thermald /system/bin/thermald
+service thermald /vendor/bin/thermald
     class main
     user root
     group root
 
 # WiFi
-service wpa_supplicant /system/bin/wpa_supplicant \
+service wpa_supplicant /vendor/bin/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
     -I/system/etc/wifi/wpa_supplicant_overlay.conf -N \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf \
@@ -395,7 +395,7 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     oneshot
 # End WiFi
 
-service wcnss-service /system/bin/wcnss_service
+service wcnss-service /vendor/bin/wcnss_service
     class main
     user system
     group system wifi oem_2950 radio
