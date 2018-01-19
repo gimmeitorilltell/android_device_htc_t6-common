@@ -428,7 +428,7 @@ service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
 service wcnss-service /system/bin/wcnss_service
     class main
     user system
-    group system wifi qcom_diag radio
+    group system wifi oem_2950 radio
     oneshot
 
 ## Properties start here
