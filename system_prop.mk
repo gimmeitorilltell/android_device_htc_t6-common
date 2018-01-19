@@ -53,6 +53,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     sys.io.scheduler=bfq
 
+# SDCard FS
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.sys.sdcardfs=false
+
 # Time services
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.timed.enable=true
