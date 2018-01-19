@@ -22,7 +22,7 @@ LOCAL_SRC_FILES := \
 LOCAL_SHARED_LIBRARIES := libicuuc libicui18n
 LOCAL_MODULE := libqc-opt_shim
 LOCAL_MODULE_TAGS := optional
-
+LOCAL_PROPRIETARY_MODULE := true
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -39,5 +39,5 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := ril_shim.cpp
 LOCAL_MODULE := libshim_ril
-
+LOCAL_PROPRIETARY_MODULE := true
 include $(BUILD_SHARED_LIBRARY)
