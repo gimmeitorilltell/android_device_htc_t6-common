@@ -88,6 +88,9 @@ TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
+# Releasetools
+TARGET_RELEASETOOLS_EXTENSIONS := device/htc/t6-common/releasetools
+
 # RIL
 BOARD_PROVIDES_LIBRIL := true
 BOARD_RIL_CLASS := ../../../$(LOCAL_PATH)/ril
@@ -96,12 +99,10 @@ BOARD_RIL_CLASS := ../../../$(LOCAL_PATH)/ril
 DEFAULT_ROOT_METHOD := magisk
 
 # SELinux
--include device/qcom/sepolicy/sepolicy.mk
-
 BOARD_SEPOLICY_DIRS += device/htc/t6-common/sepolicy
 
-# Releasetools
-TARGET_RELEASETOOLS_EXTENSIONS := device/htc/t6-common/releasetools
+# Shims
+TARGET_LD_SHIM_LIBS := /system/vendor/lib/hw/camera.vendor.msm8960.so|libcamera_shim.so:/system/vendor/lib/libqc-opt.so|libqc-opt_shim.so:/system/vendor/lib/libril.so|libshim_ril.so:/system/vendor/lib/libril-qc-qmi-1.so|libshim_ril.so
 
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
