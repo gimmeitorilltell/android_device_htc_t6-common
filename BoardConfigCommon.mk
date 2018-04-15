@@ -102,7 +102,11 @@ DEFAULT_ROOT_METHOD := magisk
 BOARD_SEPOLICY_DIRS += device/htc/t6-common/sepolicy
 
 # Shims
-TARGET_LD_SHIM_LIBS := /system/vendor/lib/hw/camera.vendor.msm8960.so|libcamera_shim.so:/system/vendor/lib/libqc-opt.so|libqc-opt_shim.so:/system/vendor/lib/libril.so|libshim_ril.so:/system/vendor/lib/libril-qc-qmi-1.so|libshim_ril.so
+TARGET_LD_SHIM_LIBS := \
+    /system/vendor/lib/hw/camera.vendor.msm8960.so|libcamera_shim.so \
+    /system/vendor/lib/libqc-opt.so|libqc-opt_shim.so \
+    /system/vendor/lib/libril.so|libshim_ril.so \
+    /system/vendor/lib/libril-qc-qmi-1.so|libshim_ril.so
 
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
