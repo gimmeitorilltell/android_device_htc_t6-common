@@ -12,7 +12,7 @@ LOCAL_SRC_FILES := \
      ui/GraphicBufferMapper.cpp
 
 LOCAL_SHARED_LIBRARIES := \
-    libbinder libcutils libgui libhardware liblog libsync libui libutils
+    libbinder libcutils libgui libhardware liblog libsensor libsync libui libutils
 
 LOCAL_MODULE := libcamera_shim
 LOCAL_MODULE_TAGS := optional
@@ -22,23 +22,27 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_C_INCLUDES := \
-    $(LOCAL_PATH)/../include \
+    framework/native/include \
     system/media/camera/include
 
 LOCAL_SRC_FILES := \
     CameraWrapper.cpp
 
-LOCAL_STATIC_LIBRARIES := libbase libarect
 LOCAL_SHARED_LIBRARIES := \
-    libhardware liblog libcamera_client libutils libcutils libdl \
-    android.hidl.token@1.0-utils \
-    android.hardware.graphics.bufferqueue@1.0
+    libhardware \
+    liblog \
+    libcamera_client \
+    libgui \
+    libhidltransport \
+    libsensor \
+    libutils \
+    android.hidl.token@1.0-utils
 
-LOCAL_HEADER_LIBRARIES := libnativebase_headers
+LOCAL_STATIC_LIBRARIES := \
+    libarect
 
-LOCAL_MODULE := camera.$(TARGET_BOARD_PLATFORM)
 LOCAL_MODULE_RELATIVE_PATH := hw
+LOCAL_MODULE := camera.$(TARGET_BOARD_PLATFORM)
 LOCAL_MODULE_TAGS := optional
 LOCAL_PROPRIETARY_MODULE := true
-
 include $(BUILD_SHARED_LIBRARY)
