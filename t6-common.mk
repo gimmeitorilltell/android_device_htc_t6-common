@@ -60,7 +60,7 @@ PRODUCT_PACKAGES += \
     libcamera_shim
 
 # Charger
-WITH_CM_CHARGER := false
+WITH_LINEAGE_CHARGER := false
 
 # Gello
 PRODUCT_PACKAGES += \
