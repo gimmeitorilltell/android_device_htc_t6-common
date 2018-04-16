@@ -27,7 +27,7 @@
 # inherit from common msm8960
 -include device/htc/msm8960-common/BoardConfigCommon.mk
 
-LOCAL_PATH := device/htc/t6-common
+PLATFORM_PATH := device/htc/t6-common
 
 TARGET_SPECIFIC_HEADER_PATH += device/htc/t6-common/include
 
@@ -46,7 +46,7 @@ USE_CUSTOM_AUDIO_POLICY := 1
 
 # Bluetooth
 BLUETOOTH_HCI_USE_MCT := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(PLATFORM_PATH)/bluetooth
 BOARD_HAVE_BLUETOOTH_QCOM := true
 
 # Boot animation
@@ -60,7 +60,7 @@ USE_DEVICE_SPECIFIC_CAMERA := true
 BOARD_CHARGING_MODE_BOOTING_LPM := /sys/htc_lpm/lpm_mode
 
 # CMHW
-BOARD_HARDWARE_CLASS := $(LOCAL_PATH)/cmhw
+BOARD_HARDWARE_CLASS := $(PLATFORM_PATH)/lineagehw
 
 # Filesystem
 BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
@@ -84,20 +84,19 @@ HAVE_ADRENO_SOURCE := false
 BOARD_GLOBAL_CFLAGS := -DBOARD_RECOVERY_BLDRMSG_OFFSET=2048
 BOARD_NO_SECURE_DISCARD := true
 TARGET_RECOVERY_DEVICE_DIRS += device/htc/t6-common
-TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/etc/fstab.qcom
+TARGET_RECOVERY_FSTAB := $(PLATFORM_PATH)/rootdir/etc/fstab.qcom
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
 # RIL
 BOARD_PROVIDES_LIBRIL := true
-BOARD_RIL_CLASS := ../../../$(LOCAL_PATH)/ril
 
 # ROOT
 DEFAULT_ROOT_METHOD := magisk
 
 # SELinux
-#BOARD_SEPOLICY_DIRS += device/htc/t6-common/sepolicy
+#BOARD_SEPOLICY_DIRS += $(PLATFORM_PATH)/sepolicy
 
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
