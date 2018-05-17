@@ -27,13 +27,13 @@
 # inherit from common msm8960
 -include device/htc/msm8960-common/BoardConfigCommon.mk
 
-LOCAL_PATH := device/htc/t6-common
+PLATFORM_PATH := device/htc/t6-common
 
 TARGET_SPECIFIC_HEADER_PATH += device/htc/t6-common/include
 
 # Kernel
 BOARD_KERNEL_BASE := 0x80600000
-BOARD_KERNEL_IMAGE_NAME = zImage
+BOARD_KERNEL_IMAGE_NAME := zImage
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_CMDLINE := console=none androidboot.hardware=qcom user_debug=23 androidboot.selinux=permissive
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01800000
@@ -43,10 +43,11 @@ TARGET_KERNEL_SOURCE := kernel/htc/msm8960
 # Audio
 BOARD_HAVE_HTC_CSDCLIENT := true
 USE_CUSTOM_AUDIO_POLICY := 1
+USE_XML_AUDIO_POLICY_CONF := 1
 
 # Bluetooth
 BLUETOOTH_HCI_USE_MCT := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(PLATFORM_PATH)/bluetooth
 BOARD_HAVE_BLUETOOTH_QCOM := true
 
 # Boot animation
@@ -55,9 +56,14 @@ TARGET_BOOTANIMATION_HALF_RES := true
 # Camera
 TARGET_DISPLAY_INSECURE_MM_HEAP := true
 USE_DEVICE_SPECIFIC_CAMERA := true
+TARGET_USES_MEDIA_EXTENSIONS := true
+TARGET_USES_NON_TREBLE_CAMERA := true
 
 # Charge mode
 BOARD_CHARGING_MODE_BOOTING_LPM := /sys/htc_lpm/lpm_mode
+
+# Gps
+USE_DEVICE_SPECIFIC_GPS := true
 
 # LineageHW
 BOARD_HARDWARE_CLASS := $(PLATFORM_PATH)/lineagehw
@@ -87,7 +93,7 @@ DEVICE_MANIFEST_FILE += device/htc/t6-common/manifest.xml
 BOARD_GLOBAL_CFLAGS := -DBOARD_RECOVERY_BLDRMSG_OFFSET=2048
 BOARD_NO_SECURE_DISCARD := true
 TARGET_RECOVERY_DEVICE_DIRS += device/htc/t6-common
-TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/etc/fstab.qcom
+TARGET_RECOVERY_FSTAB := $(PLATFORM_PATH)/rootdir/etc/fstab.qcom
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
@@ -96,10 +102,7 @@ TARGET_USERIMAGES_USE_F2FS := true
 TARGET_RELEASETOOLS_EXTENSIONS := device/htc/t6-common/releasetools
 
 # RIL
-BOARD_RIL_CLASS := ../../../$(LOCAL_PATH)/ril
-
-# ROOT
-DEFAULT_ROOT_METHOD := magisk
+BOARD_PROVIDES_LIBRIL := true
 
 # SELinux
 BOARD_SEPOLICY_DIRS += device/htc/t6-common/sepolicy
