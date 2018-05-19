@@ -109,10 +109,12 @@ BOARD_PROVIDES_LIBRIL := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
+    /system/lib/liblog.so|liblog_shim.so \
     /system/vendor/lib/hw/camera.vendor.msm8960.so|libcamera_shim.so \
     /system/vendor/lib/libqc-opt.so|libqc-opt_shim.so \
     /system/vendor/lib/libril.so|libshim_ril.so \
-    /system/vendor/lib/libril-qc-qmi-1.so|libshim_ril.so
+    /system/vendor/lib/libril-qc-qmi-1.so|libshim_ril.so \
+    /system/vendor/bin/mpdecision|libshims_atomic.so
 
 # Releasetools
 TARGET_RELEASETOOLS_EXTENSIONS := device/htc/t6-common/releasetools
