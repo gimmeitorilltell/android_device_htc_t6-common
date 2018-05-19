@@ -31,6 +31,8 @@ PLATFORM_PATH := device/htc/t6-common
 
 TARGET_SPECIFIC_HEADER_PATH += device/htc/t6-common/include
 
+ALLOW_MISSING_DEPENDENCIES += true
+
 # Kernel
 BOARD_KERNEL_BASE := 0x80600000
 BOARD_KERNEL_IMAGE_NAME := zImage
@@ -88,8 +90,7 @@ OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
 HAVE_ADRENO_SOURCE := false
 
 # HIDL
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/manifest.xml:system/vendor/manifest.xml
+DEVICE_MANIFEST_FILE := device/htc/t6-common/manifest.xml
 
 # Recovery
 BOARD_GLOBAL_CFLAGS := -DBOARD_RECOVERY_BLDRMSG_OFFSET=2048
