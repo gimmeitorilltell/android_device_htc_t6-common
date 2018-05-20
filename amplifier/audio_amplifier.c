@@ -35,17 +35,17 @@
 #define DEVICE_OUT_WIRED_HEADSET 0x4
 #define DEVICE_OUT_WIRED_HEADPHONE 0x8
 
-typedef struct m7_device {
+typedef struct t6_device {
     amplifier_device_t amp_dev;
     audio_mode_t current_mode;
-} m7_device_t;
+} t6_device_t;
 
-static m7_device_t *m7_dev = NULL;
+static t6_device_t *t6_dev = NULL;
 
 static int amp_set_mode(amplifier_device_t *device, audio_mode_t mode)
 {
     int ret = 0;
-    m7_device_t *dev = (m7_device_t *) device;
+    t6_device_t *dev = (t6_device_t *) device;
 
     dev->current_mode = mode;
 
@@ -54,7 +54,7 @@ static int amp_set_mode(amplifier_device_t *device, audio_mode_t mode)
 
 static int amp_set_output_devices(amplifier_device_t *device, uint32_t devices)
 {
-    m7_device_t *dev = (m7_device_t *) device;
+    t6_device_t *dev = (t6_device_t *) device;
 
     if ((devices & DEVICE_OUT_WIRED_HEADSET) ||
             (devices & DEVICE_OUT_WIRED_HEADPHONE)) {
@@ -67,7 +67,7 @@ static int amp_set_output_devices(amplifier_device_t *device, uint32_t devices)
 static int amp_enable_output_devices(amplifier_device_t *device,
         uint32_t devices, bool enable)
 {
-    m7_device_t *dev = (m7_device_t *) device;
+    t6_device_t *dev = (t6_device_t *) device;
 
     if (devices & DEVICE_OUT_SPEAKER) {
         tfa9887_power(enable);
@@ -82,7 +82,7 @@ static int amp_enable_output_devices(amplifier_device_t *device,
 
 static int amp_dev_close(hw_device_t *device)
 {
-    m7_device_t *dev = (m7_device_t *) device;
+    t6_device_t *dev = (t6_device_t *) device;
 
     tfa9887_power(false);
     tfa9887_close();
@@ -95,37 +95,37 @@ static int amp_dev_close(hw_device_t *device)
 static int amp_module_open(const hw_module_t *module, UNUSED const char *name,
         hw_device_t **device)
 {
-    if (m7_dev) {
+    if (t6_dev) {
         ALOGE("%s:%d: Unable to open second instance of TFA9887 amplifier\n",
                 __func__, __LINE__);
         return -EBUSY;
     }
 
-    m7_dev = calloc(1, sizeof(m7_device_t));
-    if (!m7_dev) {
+    t6_dev = calloc(1, sizeof(t6_device_t));
+    if (!t6_dev) {
         ALOGE("%s:%d: Unable to allocate memory for amplifier device\n",
                 __func__, __LINE__);
         return -ENOMEM;
     }
 
-    m7_dev->amp_dev.common.tag = HARDWARE_DEVICE_TAG;
-    m7_dev->amp_dev.common.module = (hw_module_t *) module;
-    m7_dev->amp_dev.common.version = HARDWARE_DEVICE_API_VERSION(1, 0);
-    m7_dev->amp_dev.common.close = amp_dev_close;
+    t6_dev->amp_dev.common.tag = HARDWARE_DEVICE_TAG;
+    t6_dev->amp_dev.common.module = (hw_module_t *) module;
+    t6_dev->amp_dev.common.version = HARDWARE_DEVICE_API_VERSION(1, 0);
+    t6_dev->amp_dev.common.close = amp_dev_close;
 
-    m7_dev->amp_dev.set_input_devices = NULL;
-    m7_dev->amp_dev.set_output_devices = amp_set_output_devices;
-    m7_dev->amp_dev.enable_input_devices = NULL;
-    m7_dev->amp_dev.enable_output_devices = amp_enable_output_devices;
-    m7_dev->amp_dev.set_mode = amp_set_mode;
-    m7_dev->amp_dev.output_stream_start = NULL;
-    m7_dev->amp_dev.input_stream_start = NULL;
-    m7_dev->amp_dev.output_stream_standby = NULL;
-    m7_dev->amp_dev.input_stream_standby = NULL;
+    t6_dev->amp_dev.set_input_devices = NULL;
+    t6_dev->amp_dev.set_output_devices = amp_set_output_devices;
+    t6_dev->amp_dev.enable_input_devices = NULL;
+    t6_dev->amp_dev.enable_output_devices = amp_enable_output_devices;
+    t6_dev->amp_dev.set_mode = amp_set_mode;
+    t6_dev->amp_dev.output_stream_start = NULL;
+    t6_dev->amp_dev.input_stream_start = NULL;
+    t6_dev->amp_dev.output_stream_standby = NULL;
+    t6_dev->amp_dev.input_stream_standby = NULL;
 
-    m7_dev->current_mode = AUDIO_MODE_NORMAL;
+    t6_dev->current_mode = AUDIO_MODE_NORMAL;
 
-    *device = (hw_device_t *) m7_dev;
+    *device = (hw_device_t *) t6_dev;
 
     tfa9887_open();
 
@@ -142,8 +142,8 @@ amplifier_module_t HAL_MODULE_INFO_SYM = {
         .module_api_version = AMPLIFIER_MODULE_API_VERSION_0_1,
         .hal_api_version = HARDWARE_HAL_API_VERSION,
         .id = AMPLIFIER_HARDWARE_MODULE_ID,
-        .name = "M7 audio amplifier HAL",
-        .author = "The CyanogenMod Open Source Project",
+        .name = "T6 audio amplifier HAL",
+        .author = "The LineageOS Open Source Project",
         .methods = &hal_module_methods,
     },
 };

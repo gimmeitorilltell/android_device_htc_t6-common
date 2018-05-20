@@ -320,20 +320,6 @@ on boot
     chown system system /sys/class/power_supply/battery/navigation
     chmod 0220 /sys/class/power_supply/battery/navigation
 
-    # Fingerprint
-    mkdir /dev/validity 0770 system system
-    mkdir /data/validity 0770 system system
-
-    # Fingerprint_sensor
-    chown system system /sys/android_fingerprint/fpmount
-    chown system system /sys/android_fingerprint/fpr
-
-    chown system system /dev/htc_fingerprint
-    chmod 0660 /dev/htc_fingerprint
-    restorecon_recursive /dev/htc_fingerprint
-    restorecon_recursive /dev/validity
-    restorecon_recursive /dev/vfsspi
-
     # Swappiness and memory pages
     write /proc/sys/vm/page-cluster 0
     write /proc/sys/vm/swappiness 40
@@ -401,11 +387,6 @@ service thermald /bin/thermald
     class main
     user root
     group root
-	
-#service vcsFPService /vendor/bin/vcsFPService
-#    class late_start
-#    user root
-#    group system
 	
 # WiFi
 service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
