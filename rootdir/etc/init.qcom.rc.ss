@@ -1,6 +1,7 @@
 import init.qcom.power.rc
 import init.target.rc
 import init.qcom.usb.rc
+import init.candy.rc
 
 on early-init
     symlink /data/tombstones /tombstones
@@ -13,17 +14,18 @@ on early-init
     mkdir /firmware/q6 0771 system system
     mkdir /firmware/wcnss 0771 system system
 
-    mount debugfs /sys/kernel/debug /sys/kernel/debug
+    mount debugfs debugfs /sys/kernel/debug
+    chmod 0755 /sys/kernel/debug
+
     chown system system /sys/kernel/debug/kgsl/proc
-	
+
 on init
-    #export LD_PRELOAD libshim_atomic.so 
+    export LD_PRELOAD libshim_atomic.so
+
+    # Set permissions for persist partition
+    mkdir /persist 0771 system system  
 
     symlink /sdcard /storage/sdcard0
-	
-    # Setup ZRAM options
-    write /sys/block/zram0/comp_algorithm lz4
-    write /sys/block/zram0/max_comp_streams 2
 
     # For Invensense MPU3050
     chmod 0664 /sys/class/gyro_sensors/gyro/mpu_lpm_flag
@@ -170,6 +172,10 @@ on init
     # Touchscreen
     chown system system /sys/class/leds/button-backlight/currents
 
+    # ZRAM setup
+    write /sys/block/zram0/comp_algorithm lz4
+    write /proc/sys/vm/page-cluster 0
+
 # On emmc mount the partition containing firmware
 on fs
     mkdir /devlog 0700 root root
@@ -209,8 +215,19 @@ on post-fs-data
     mkdir /data/radio 0770 radio radio
     chmod 2770 /data/radio
 
+    mkdir /data/misc/audio 0770 audio audio
+    mkdir /data/misc/radio 0770 system radio
+    mkdir /data/misc/sms 0770 system radio
+
     # Mpdecision state
     mkdir /data/mpdecision 0660 system system
+
+    # communicate with mpdecision and thermald
+    mkdir /dev/socket/mpdecision 2770 root system
+
+    # NFC local data and nfcee xml storage
+    mkdir /data/nfc 0770 nfc nfc
+    mkdir /data/nfc/param 0770 nfc nfc
 
     # GPS
     mkdir /data/misc/location 0770 gps gps
@@ -240,6 +257,9 @@ on boot
     chmod 2770 /dev/socket/qmux_bluetooth
     mkdir /dev/socket/qmux_gps 0770 gps gps
     chmod 2770 /dev/socket/qmux_gps
+
+    # Allow QMUX daemon to assign port open wait time
+    chown radio radio /sys/devices/virtual/hsicctl/hsicctl0/modem_wait
 
     start qcamerasvr
 
@@ -277,10 +297,10 @@ on boot
     write /sys/kernel/debug/pm8921-dbg/addr 0x1F5
     write /sys/kernel/debug/pm8921-dbg/data 0xE1
 
-    #write /proc/sys/net/ipv6/conf/p2p0/disable_ipv6 1
+    write /proc/sys/net/ipv6/conf/p2p0/disable_ipv6 1
 
     # Create symlink for fb1 as HDMI
-    symlink /dev/graphics/fb1 /dev/graphics/hdmi
+    symlink /sys/class/graphics/fb1 /dev/graphics/hdmi
 
     # Set permissions for fb1 related nodes
     chmod 0664 /sys/devices/virtual/graphics/fb1/format_3d
@@ -338,20 +358,23 @@ on boot
     write /proc/sys/vm/page-cluster 0
     write /proc/sys/vm/swappiness 40
 
+    # Bluetooth MAC address
+    chown bluetooth bluetooth /sys/module/htc_bdaddress/parameters/bdaddress
+
     # Wifi firmware reload path
-    chown wifi wifi /sys/module/wlan/parameters/fwpath
+    chown wifi wifi /sys/module/bcmdhd/parameters/firmware_path
 
     # Wake on volume
     write /sys/keyboard/vol_wakeup 1
 
 # Services begin here
 
-service akmd /bin/akmd
+service akmd /system/bin/akmd
     class main
     user system
     group system misc input
 
-service cir_fw_update /bin/cir_fw_update -u cir.img
+service cir_fw_update /system/bin/cir_fw_update -u cir.img
     class main
     user root
     group root
@@ -364,9 +387,8 @@ service fm_dl /system/bin/setprop hw.fm.init 1
     disabled
     oneshot
 
-service netmgrd /bin/netmgrd
+service netmgrd /system/bin/netmgrd
     class core
-	user root
     group root system wifi wakelock radio inet
 
 service hciattach /system/bin/sh /system/vendor/etc/init.qcom.bt.sh
@@ -376,28 +398,28 @@ service hciattach /system/bin/sh /system/vendor/etc/init.qcom.bt.sh
     # seclabel u:r:bluetooth_loader:s0
     oneshot
 
-service mpdecision /bin/mpdecision --no_sleep --avg_comp
+service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
     class main
     user root
     group root readproc
     disabled
 
-service qcamerasvr /bin/mm-qcamera-daemon
+service qcamerasvr /system/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet graphics
 
-service qmuxd /bin/qmuxd
+service qmuxd /system/bin/qmuxd
     class core
-    user root
-    group radio audio gps wakelock oem_2950
+    user radio
+    group radio audio bluetooth gps oem_2950
 
-service qseecomd /vendor/bin/qseecomd
+service qseecomd /system/bin/qseecomd
     class core
     user root
     group root
 
-service thermald /bin/thermald
+service thermald /system/bin/thermald
     class main
     user root
     group root
@@ -431,12 +453,6 @@ service wcnss-service /system/bin/wcnss_service
     group system wifi qcom_diag radio
     oneshot
 
-## Properties start here
-on property:sys.boot_completed=1
-    # Enable ZRAM on boot_complete
-    swapon_all ./fstab.qcom
-	restart qcamerasvr
-
 # Property triggers begin here
 on property:bluetooth.hciattach=true
     start hciattach
@@ -449,6 +465,9 @@ on property:init.svc.bootanim=stopped
     chown radio radio /sys/devices/virtual/hsicctl/hsicctl0/modem_wait
     # Init modem
     write /sys/module/rmnet_usb/parameters/rmnet_data_init 1
+
+on property:sys.boot_completed=1
+    restart qcamerasvr
 
 on property:service.adb.root=1
     write /sys/class/android_usb/android0/enable 0
