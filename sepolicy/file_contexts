@@ -13,17 +13,33 @@
 /data/cam_socket.*              u:object_r:camera_socket:s0
 /dev/gemini.*                   u:object_r:camera_device:s0
 /dev/rawchip.*                  u:object_r:camera_device:s0
-/sys/camera_htccallback/htccallback u:object_r:camera_sysfs:s0
 
 # CIR
 /dev/ttyHSL2                    u:object_r:cir_device:s0
 /system/bin/cir_fw_update       u:object_r:cir_fw_update_exec:s0
 
-# CMHW
+# LOSHW
 /sys/devices/virtual/timed_output/vibrator/voltage_level   u:object_r:vibeamp_sysfs:s0
 
 # Encryption
 /dev/block/platform/msm_sdcc\.1/by-name/extra  u:object_r:metadata_block_device:s0
+
+# Fingerprint
+#/system/bin/vcsFPService        u:object_r:vcs_exec:s0
+/data/validity(/.*)?            u:object_r:vcs_data_file:s0
+/data/validity                  u:object_r:vcs_data_file:s0
+#/dev/validity(/.*)?             u:object_r:vcs_device:s0
+#/dev/vfsspi                     u:object_r:vcs_device:s0
+
+#/dev/vcs[0-9a-z]*        u:object_r:vcs_device:s0
+/dev/vfsspi        u:object_r:vcsFPService_device:s0
+/dev/validity/*        u:object_r:vcsFPService_device:s0
+/dev/htc_fingerprint        u:object_r:vcsFPService_device:s0
+	
+/system/bin/vcsFPService        u:object_r:vcsFPService_exec:s0
+/system/bin/vcsFirmwareVersion        u:object_r:vcsFPService_exec:s0
+/system/bin/vcsSimpleEnrollMatch        u:object_r:vcsFPService_exec:s0
+/system/bin/vcsSimpleCapture        u:object_r:vcsFPService_exec:s0
 
 # Graphics
 /sys/devices/platform/kgsl-3d0\.0/kgsl/kgsl-3d0/gpuclk       u:object_r:sysfs_thermal:s0
@@ -36,6 +52,7 @@
 /dev/block/mmcblk0p23           u:object_r:modem_efs_partition_device:s0
 /dev/block/mmcblk0p30           u:object_r:modem_efs_partition_device:s0
 /dev/ttyUSB0                    u:object_r:radio_device:s0
+/sys/kernel/debug/ion/mm                                     u:object_r:ion_debugfs:s0
 
 # Mpdecision
 /data/system/default_values     u:object_r:mpctl_data_file:s0
@@ -58,6 +75,7 @@
 /system/blobs/vzw/bin/netmgrd                          u:object_r:netmgrd_exec:s0
 /system/blobs/vzw/bin/qcks                             u:object_r:mdm_helper_exec:s0
 /system/blobs/vzw/bin/qmuxd                            u:object_r:qmuxd_exec:s0
+/system/bin/rild_qsc                                   u:object_r:rild_exec:s0
 
 # Sensors
 /data/misc/akmd_set.txt         u:object_r:sensors_data_file:s0
@@ -73,3 +91,6 @@
 /sys/devices/virtual/graphics/fb1/hpd                  -- u:object_r:surfaceflinger_sysfs:s0
 /sys/devices/virtual/graphics/fb1/product_description  -- u:object_r:surfaceflinger_sysfs:s0
 /sys/devices/virtual/graphics/fb1/vendor_name          -- u:object_r:surfaceflinger_sysfs:s0
+
+# ZRAM
+/dev/block/zram0                                                                  u:object_r:swap_block_device:s0
