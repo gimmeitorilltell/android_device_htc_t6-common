@@ -110,6 +110,7 @@ BOARD_PROVIDES_LIBRIL := true
 # Shims
 TARGET_LD_SHIM_LIBS := \
     /system/lib/liblog.so|liblog_shim.so \
+    /system/lib/libvcsfp.so|libvcsfp_shim.so \
     /system/vendor/lib/hw/camera.vendor.msm8960.so|libcamera_shim.so \
     /system/vendor/lib/libqc-opt.so|libqc-opt_shim.so \
     /system/vendor/lib/libril.so|libshim_ril.so \
